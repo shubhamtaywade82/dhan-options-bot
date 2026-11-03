@@ -202,7 +202,18 @@ export async function runScan({ cfgOverride = null, force = false, once = false 
       logger.warn(`Option chain failed for ${w.instrument.symbol}: ${err.message}`);
     }
   }
-  const chainTimer = setInterval(pollNextChain, Math.max(cfg.scanner.chainPollMs || 4000, 3500));
+  let chainPollInFlight = false;
+  const chainTimer = setInterval(async () => {
+    if (stopped || chainPollInFlight) return;
+    chainPollInFlight = true;
+    try {
+      await pollNextChain();
+    } catch (err) {
+      logger.error(`Option-chain poll crashed: ${err.message}`);
+    } finally {
+      chainPollInFlight = false;
+    }
+  }, Math.max(cfg.scanner.chainPollMs || 4000, 3500));
 
   // ---------------- the decision pipeline ----------------
   const minScore = cfg.decision.minScore ?? 0.45;

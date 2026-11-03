@@ -1,0 +1,36 @@
+{
+  "name": "dhan-options-bot",
+  "version": "1.0.0",
+  "description": "Layered options signal scanner + paper-trading bot for DhanHQ v2 (NIFTY / SENSEX / Stock F&O): deterministic strategy registry, optional Tev1 model selection via ollama-sdk, hard risk gate. Signals only - never places real orders.",
+  "type": "module",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/index.js scan",
+    "scan": "node src/index.js scan",
+    "chain": "node src/index.js chain",
+    "backtest": "node src/index.js backtest",
+    "report": "node src/index.js report",
+    "selftest": "node src/index.js selftest"
+  },
+  "dependencies": {
+    "@nemesis-oss/ollama-sdk": "^1.25.0",
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "ws": "^8.18.0"
+  },
+  "keywords": [
+    "dhanhq",
+    "options",
+    "nifty",
+    "sensex",
+    "scanner",
+    "paper-trading",
+    "algorithmic-trading",
+    "ollama",
+    "tev1"
+  ],
+  "license": "MIT"
+}

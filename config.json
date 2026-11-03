@@ -1,0 +1,102 @@
+{
+  "instruments": [
+    { "symbol": "NIFTY",      "kind": "index", "lots": 1, "expiryPreference": "weekly"  },
+    { "symbol": "SENSEX",     "kind": "index", "lots": 1, "expiryPreference": "weekly"  },
+    { "symbol": "RELIANCE",   "kind": "stock", "lots": 1, "expiryPreference": "monthly" },
+    { "symbol": "HDFCBANK",   "kind": "stock", "lots": 1, "expiryPreference": "monthly" },
+    { "symbol": "SBIN",       "kind": "stock", "lots": 1, "expiryPreference": "monthly" }
+  ],
+
+  "candles": {
+    "interval": 5,
+    "emaFast": 9,
+    "emaSlow": 21,
+    "refreshMs": 60000
+  },
+
+  "context": {
+    "adxTrend": 25,
+    "adxRange": 18,
+    "highVolAtrPct": 0.25,
+    "minCandles": 20
+  },
+
+  "strategies": {
+    "emaCross":          { "enabled": true, "minSpreadPct": 0.05 },
+    "trendContinuation": { "enabled": true },
+    "rangeBreak":        { "enabled": true, "rangeCandles": 3, "volumeSurge": 1.2 },
+    "momentumBreak":     { "enabled": true, "rocPct": 0.35, "volumeSurge": 1.5 },
+    "trendFlip":         { "enabled": true, "rsiOverbought": 72, "rsiOversold": 28 }
+  },
+
+  "chain": {
+    "pcrBullish": 1.1,
+    "pcrBearish": 0.8
+  },
+
+  "chainConfirmation": {
+    "enabled": true,
+    "opposeKill": 0.2,
+    "agreeBoost": 0.15
+  },
+
+  "decision": {
+    "selector": "auto",
+    "minScore": 0.45,
+    "cooldownMinutes": 15,
+    "maxSignalsPerDay": 10,
+    "signalWindow": { "start": "09:20", "end": "15:05" },
+    "tev1": {
+      "model": "tev1:0.8b",
+      "baseUrl": "http://127.0.0.1:11434",
+      "timeoutMs": 3000,
+      "minConfidence": 0.55,
+      "keepAlive": "10m"
+    }
+  },
+
+  "options": {
+    "strikeOffset": 0,
+    "maxSpreadPct": 3,
+    "minLegVolume": 500,
+    "minLegOi": 500,
+    "maxChainAgeMs": 30000,
+    "minDelta": 0.25,
+    "maxDelta": 0.8,
+    "ivMin": 8,
+    "ivMax": 60
+  },
+
+  "risk": {
+    "stopLossPct": 30,
+    "targetPct": 60,
+    "trailActivatePct": 25,
+    "trailPct": 15,
+    "squareOffTime": "15:15",
+    "maxConcurrentPositions": 3,
+    "dailyLossLimit": 5000,
+    "maxNotionalPerTrade": 400000,
+    "maxLossPerTrade": 2500,
+    "consecLossesPause": 3
+  },
+
+  "charges": {
+    "brokeragePerOrder": 20,
+    "slippageTicks": 1
+  },
+
+  "scanner": {
+    "chainPollMs": 4000,
+    "useWebSocket": true,
+    "wsFallbackPollMs": 2500
+  },
+
+  "telegram": { "enabled": true },
+
+  "backtest": {
+    "days": 30,
+    "interval": 5
+  },
+
+  "holidays": []
+}

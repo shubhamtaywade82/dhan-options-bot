@@ -21,6 +21,9 @@ import { REGIMES } from '../context/marketContext.js';
 const clamp01 = (v) => Math.max(0, Math.min(1, v));
 
 export class StrategyRegistry {
+  cfg: any;
+  definitions: any[];
+
   /**
    * @param {object} cfg  {
    *   strategies: { emaCross:{enabled,minSpreadPct}, trendContinuation:{enabled},
@@ -30,7 +33,7 @@ export class StrategyRegistry {
    *   chainConfirmation: { enabled, opposeKill, agreeBoost },
    * }
    */
-  constructor(cfg = {}) {
+  constructor(cfg: any = {}) {
     this.cfg = cfg;
     this.definitions = [
       {

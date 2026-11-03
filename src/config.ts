@@ -7,11 +7,22 @@ import path from 'node:path';
 import url from 'node:url';
 import dotenv from 'dotenv';
 
-const ROOT = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), '..');
+function findProjectRoot(moduleDir: string): string {
+  let current = moduleDir;
+  while (true) {
+    if (fs.existsSync(path.join(current, 'config.json'))) return current;
+    const parent = path.dirname(current);
+    if (parent === current) break;
+    current = parent;
+  }
+  throw new Error(`Could not find config.json above ${moduleDir}`);
+}
+
+const ROOT = findProjectRoot(path.dirname(url.fileURLToPath(import.meta.url)));
 
 dotenv.config({ path: path.join(ROOT, '.env') });
 
-export function loadConfig(overrides = {}) {
+export function loadConfig(overrides: any = {}) {
   const file = path.join(ROOT, 'config.json');
   const disk = JSON.parse(fs.readFileSync(file, 'utf8'));
 
@@ -34,7 +45,7 @@ export function loadConfig(overrides = {}) {
 
 function fail(msg) { throw new Error(`config: ${msg}`); }
 
-function validate(cfg) {
+function validate(cfg: any) {
   if (!Array.isArray(cfg.instruments) || cfg.instruments.length === 0) fail('instruments list is empty');
   for (const i of cfg.instruments) {
     if (!i.symbol) fail('every instrument needs a symbol');

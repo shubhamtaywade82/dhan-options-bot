@@ -18,6 +18,10 @@ const BASE_URL = 'https://api.dhan.co/v2';
 
 /** Serialize calls with a minimum spacing (ms) per named bucket. */
 class SpacingLimiter {
+  spacingMs: number;
+  chain: Promise<any>;
+  lastAt: number;
+
   constructor(spacingMs) {
     this.spacingMs = spacingMs;
     this.chain = Promise.resolve();
@@ -44,13 +48,20 @@ const BUCKETS = {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export class DhanClient {
+  clientId: string;
+  logger: any;
+  http: any;
+  _chainKeyLast: Map<string, number>;
+  _chainKeySpacingMs: number;
+  requestCount: number;
+
   /**
    * @param {object} opts
    * @param {string} opts.clientId
    * @param {string} opts.accessToken
    * @param {import('./logger.js').BotLogger} [opts.logger]
    */
-  constructor({ clientId, accessToken, logger = null, axiosImpl = axios } = {}) {
+  constructor({ clientId, accessToken, logger = null, axiosImpl = axios }: any = {}) {
     if (!clientId || !accessToken) {
       throw new Error('DhanClient needs clientId and accessToken');
     }
@@ -172,6 +183,10 @@ export class DhanClient {
 }
 
 export class DhanApiError extends Error {
+  status: number;
+  path: string;
+  payload: any;
+
   constructor(status, message, path, payload) {
     super(`DhanHQ ${status} on ${path}: ${message}`);
     this.name = 'DhanApiError';

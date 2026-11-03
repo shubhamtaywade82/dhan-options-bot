@@ -3,9 +3,9 @@
  *
  * Modes:
  *   scan       live signal scanner + paper trader (default)
- *   chain      one-shot option chain snapshot:      node src/index.js chain NIFTY
- *   backtest   historical sanity check (rolling options data): node src/index.js backtest [--days 30]
- *   report     regenerate the daily paper report:   node src/index.js report [YYYY-MM-DD]
+ *   chain      one-shot option chain snapshot:      npm run chain -- NIFTY
+ *   backtest   historical sanity check:             npm run backtest -- --days 30
+ *   report     regenerate the daily paper report:   npm run report -- YYYY-MM-DD
  *   selftest   offline unit tests + mock run (no credentials needed)
  *
  * Flags:
@@ -68,13 +68,13 @@ function printHelp(unknown) {
   console.log(`DhanHQ v2 Options Bot (paper trading only)
 
 Usage:
-  node src/index.js scan                 live scanner + paper trader (default)
-  node src/index.js scan --force         run even outside market hours
-  node src/index.js scan --once          evaluate one cycle and exit
-  node src/index.js chain [SYMBOL]       option chain snapshot (default NIFTY)
-  node src/index.js backtest [--days N]  historical sanity check (default 30 days)
-  node src/index.js report [DATE]        regenerate daily paper report
-  node src/index.js selftest             offline tests - no credentials needed
+  npm start                              live scanner + paper trader
+  npm run scan -- --force                run even outside market hours
+  npm run scan -- --once                 evaluate one cycle and exit
+  npm run chain -- [SYMBOL]              option chain snapshot (default NIFTY)
+  npm run backtest -- [--days N]         historical sanity check (default 30 days)
+  npm run report -- [DATE]               regenerate daily paper report
+  npm run selftest                       offline tests - no credentials needed
 
 Setup: cp .env.example .env  (fill DHAN_CLIENT_ID + DHAN_ACCESS_TOKEN)`);
 }

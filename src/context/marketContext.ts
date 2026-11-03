@@ -26,7 +26,7 @@ export const REGIMES = {
  * @param {object} [chainMetrics]  output of computeChainMetrics (optional)
  * @param {object} [cfg]  { adxTrend, adxRange, highVolAtrPct, minCandles, emaFast, emaSlow }
  */
-export function buildMarketContext(candles, chainMetrics = null, cfg = {}) {
+export function buildMarketContext(candles: any[], chainMetrics: any = null, cfg: any = {}) {
   const adxTrend = cfg.adxTrend ?? 25;
   const adxRange = cfg.adxRange ?? 18;
   const highVolAtrPct = cfg.highVolAtrPct ?? 0.25;

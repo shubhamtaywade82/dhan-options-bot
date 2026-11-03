@@ -6,7 +6,14 @@
 import axios from 'axios';
 
 export class TelegramNotifier {
-  constructor({ botToken = '', chatId = '', enabled = true, logger = null } = {}) {
+  botToken: string;
+  chatId: string;
+  enabled: boolean;
+  logger: any;
+  http: any;
+  queue: Promise<void>;
+
+  constructor({ botToken = '', chatId = '', enabled = true, logger = null }: any = {}) {
     this.botToken = botToken;
     this.chatId = chatId;
     this.enabled = enabled && Boolean(botToken && chatId);

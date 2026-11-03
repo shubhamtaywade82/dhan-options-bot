@@ -1,6 +1,6 @@
 /**
  * `chain` mode - one-shot option chain snapshot (sanity check / debugging).
- * Usage: node src/index.js chain NIFTY
+ * Usage: npm run chain -- NIFTY
  */
 
 import { loadConfig, assertCredentials } from '../config.js';

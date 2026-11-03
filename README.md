@@ -52,7 +52,7 @@ DecisionJournal + signals/trades/decisions CSVs + Telegram + daily report
   behaviour is auditable after the fact (`data/decisions.csv`).
 - **An identical snapshot cannot re-decide** (no duplicate order intents).
 
-## The five strategy families (`src/strategies/registry.js`)
+## The five strategy families (`src/strategies/registry.ts`)
 
 | Family | Idea | Allowed regimes |
 | --- | --- | --- |
@@ -74,20 +74,20 @@ dhan-options-bot/
 ├── config.json                # instruments, strategies, decision, options, risk, charges
 ├── .env.example               # DHAN_CLIENT_ID / DHAN_ACCESS_TOKEN / Telegram / OLLAMA_BASE_URL
 ├── src/
-│   ├── index.js               # CLI entrypoint
-│   ├── config.js ist.js csv.js logger.js report.js
+│   ├── index.ts               # CLI entrypoint
+│   ├── config.ts csv.ts ist.ts logger.ts report.ts
 │   ├── dhan/                  # rate-limited REST client, instrument master, market data, WS feed
-│   ├── market/candleAggregator.js
-│   ├── context/marketContext.js
-│   ├── strategies/registry.js
-│   ├── decision/tev1.js       # Tev1 selector (ollama-sdk) + deterministic fallback
-│   ├── decision/journal.js
-│   ├── options/selector.js
-│   ├── risk/manager.js
-│   ├── paper/broker.js
-│   ├── notify/telegram.js
+│   ├── market/candleAggregator.ts
+│   ├── context/marketContext.ts
+│   ├── strategies/registry.ts
+│   ├── decision/tev1.ts       # Tev1 selector (ollama-sdk) + deterministic fallback
+│   ├── decision/journal.ts
+│   ├── options/selector.ts
+│   ├── risk/manager.ts
+│   ├── paper/broker.ts
+│   ├── notify/telegram.ts
 │   └── modes/                 # scan, chain, backtest, report
-└── test/selftest.js           # 173 offline checks - no credentials needed
+└── test/selftest.ts           # offline checks - no credentials needed
 ```
 
 ## Prerequisites
@@ -111,6 +111,7 @@ dhan-options-bot/
 
 ```bash
 npm install
+npm run build
 cp .env.example .env        # fill DHAN_CLIENT_ID + DHAN_ACCESS_TOKEN (and Telegram / Ollama if wanted)
 
 npm run selftest            # 173 offline checks - verifies all logic without credentials
@@ -123,11 +124,11 @@ npm start                   # live scanner (waits for 09:15 IST if started early
 
 | Command | Description |
 | --- | --- |
-| `npm start` / `node src/index.js scan` | Live scanner + paper trader. Runs until 15:15 square-off, writes the daily report, exits. `--force` ignores market-hours checks, `--once` runs a single cycle. |
-| `node src/index.js chain [SYMBOL]` | One-shot option-chain snapshot with PCR, IV, OI change per strike |
-| `node src/index.js backtest [--days 30]` | Replays the deterministic pipeline (context → registry → risk → paper broker with charges) on expired-options data |
-| `node src/index.js report [DATE]` | Regenerate the daily paper report from the CSVs |
-| `node src/index.js selftest` | Offline unit + integration tests |
+| `npm start` (`npm run scan -- --once`) | Live scanner + paper trader. Runs until 15:15 square-off, writes the daily report, exits. `--force` ignores market-hours checks, `--once` runs a single cycle. |
+| `npm run chain -- [SYMBOL]` | One-shot option-chain snapshot with PCR, IV, OI change per strike |
+| `npm run backtest -- [--days N]` | Replays the deterministic pipeline (context → registry → risk → paper broker with charges) on expired-options data |
+| `npm run report -- [DATE]` | Regenerate the daily paper report from the CSVs |
+| `npm run selftest` | Offline unit + integration tests |
 
 ## Tev1 integration (Layer 2, optional)
 
@@ -210,7 +211,7 @@ data/
 ## Automation example (cron, IST)
 
 ```cron
-10 9 * * 1-5 cd /path/to/dhan-options-bot && /usr/bin/node src/index.js scan >> data/logs/cron.log 2>&1
+10 9 * * 1-5 cd /path/to/dhan-options-bot && /usr/bin/npm run scan >> data/logs/cron.log 2>&1
 ```
 
 (The bot exits by itself after the 15:15 square-off + report.)
@@ -218,11 +219,11 @@ data/
 ## Verify before you trust
 
 1. `npm run selftest` - 173 checks green.
-2. `node src/index.js chain NIFTY` - real chain data matches your Dhan app.
+2. `npm run chain -- NIFTY` - real chain data matches your Dhan app.
 3. Run it in paper mode for a few days; read `data/reports/*.txt` and
    `decisions.csv` (especially the NO_TRADE reasons - they tell you which
    filter is doing the work).
-4. `node src/index.js backtest --days 30` - deterministic replay with the
+4. `npm run backtest -- --days 30` - deterministic replay with the
    charges model. Rolling-option data has no historical bid/ask book, so
    spread costs are modelled, not measured - treat it as a sanity check.
 

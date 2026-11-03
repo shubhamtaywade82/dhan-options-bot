@@ -20,6 +20,13 @@
 import { isPastHHMM, withinWindow, isMarketOpen } from '../ist.js';
 
 export class RiskManager {
+  cfg: any;
+  signalWindow: { start: string; end: string };
+  now: () => Date;
+  consecutiveLosses: number;
+  pausedForDay: boolean;
+  rejections: number;
+
   /**
    * @param {object} cfg risk config {
    *   stopLossPct, targetPct, squareOffTime, maxConcurrentPositions,

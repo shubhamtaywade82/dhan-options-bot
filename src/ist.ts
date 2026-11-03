@@ -23,7 +23,7 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
  * `minutes` = hh*60+mm - handy for comparing with HH:MM config strings.
  */
 export function istParts(date = new Date()) {
-  const parts = {};
+  const parts: Record<string, string> = {};
   for (const p of fmt.formatToParts(date)) parts[p.type] = p.value;
   const hh = parseInt(parts.hour, 10) % 24; // Intl can yield "24" at midnight
   const mm = parseInt(parts.minute, 10);

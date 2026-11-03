@@ -7,6 +7,11 @@
  */
 
 export class CandleAggregator {
+  intervalMs: number;
+  bucketMs: number;
+  intervalMinutes: number;
+  forming: any;
+
   /**
    * @param {number} intervalMinutes candle bucket size (default 5)
    */

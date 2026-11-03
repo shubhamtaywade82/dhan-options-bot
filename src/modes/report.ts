@@ -1,6 +1,6 @@
 /**
  * `report` mode - regenerate the daily paper-trading report from CSVs.
- * Usage: node src/index.js report [YYYY-MM-DD]
+ * Usage: npm run report -- [YYYY-MM-DD]
  */
 
 import { loadConfig } from '../config.js';

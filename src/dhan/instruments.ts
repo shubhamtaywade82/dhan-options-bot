@@ -39,7 +39,16 @@ function apiSegment(exch, segLetter) {
 }
 
 export class InstrumentMaster {
-  constructor({ dataDir, logger = null, fetchImpl = null } = {}) {
+  dataDir: string;
+  cachePath: string;
+  metaPath: string;
+  logger: any;
+  fetchImpl: typeof fetch;
+  underlyings: Map<string, any>;
+  optionLegs: Map<string, Map<string, Map<string, any>>>;
+  loadedForDate: string | null;
+
+  constructor({ dataDir, logger = null, fetchImpl = null }: any = {}) {
     this.dataDir = dataDir;
     this.cachePath = path.join(dataDir, 'instruments.csv');
     this.metaPath = path.join(dataDir, 'instruments.meta.json');
@@ -67,7 +76,7 @@ export class InstrumentMaster {
   }
 
   async ensureFreshFile(today, force) {
-    let meta = {};
+    let meta: any = {};
     try { meta = JSON.parse(fs.readFileSync(this.metaPath, 'utf8')); } catch { /* no cache yet */ }
     const exists = fs.existsSync(this.cachePath);
     if (exists && !force && meta.date === today) return false;

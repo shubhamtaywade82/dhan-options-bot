@@ -25,6 +25,13 @@ let nextId = 1;
 const DEFAULT_CHARGES = { brokeragePerOrder: 0, slippageTicks: 0 };
 
 export class PaperBroker extends EventEmitter {
+  cfg: any;
+  charges: any;
+  logger: any;
+  now: () => Date;
+  statePath: string | null;
+  positions: any[];
+
   /**
    * @param {object} cfg risk config { stopLossPct, targetPct, trailActivatePct, trailPct,
    *                  squareOffTime, charges: { brokeragePerOrder, slippageTicks } }

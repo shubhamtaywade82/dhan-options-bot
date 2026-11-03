@@ -6,6 +6,9 @@
 import { InstrumentMaster } from './instruments.js';
 
 export class MarketData {
+  client: any;
+  logger: any;
+
   constructor(client, logger = null) {
     this.client = client;
     this.logger = logger;
@@ -43,9 +46,9 @@ export class MarketData {
       InstrumentMaster.chainSegmentFor(underlying),
       expiry,
     );
-    const data = res?.data;
+    const data: any = res?.data;
     if (!data || !data.oc) throw new Error(`Option chain response missing data.oc for ${underlying.symbol}`);
-    const strikes = Object.entries(data.oc)
+    const strikes = Object.entries(data.oc as Record<string, any>)
       .map(([strikeStr, legs]) => ({
         strike: parseFloat(strikeStr),
         ce: legs.ce || null,
@@ -88,7 +91,7 @@ export class MarketData {
   async rollingOption({ underlying, interval, expiryCode = 0, expiryFlag = 'WEEK', strike = 'ATM', fromDate, toDate }) {
     const requiredData = ['open', 'high', 'low', 'close', 'iv', 'oi', 'spot'];
     const fetchType = async (drvOptionType) => {
-      const res = await this.client.rollingOption({
+      const res: any = await this.client.rollingOption({
         securityId: underlying.securityId,
         exchangeSegment: InstrumentMaster.chainSegmentFor(underlying) === 'IDX_I' ? 'IDX_I' : 'NSE_EQ',
         instrument: underlying.instrument === 'INDEX' ? 'INDEX' : 'EQUITY',

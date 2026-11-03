@@ -135,7 +135,7 @@ export async function runBacktest({ cfgOverride = null, days = null } = {}) {
       const ohlc = hist.map((x) => ({
         ts: x.ts, open: x.open, high: x.high, low: x.low, close: x.close, volume: x.volume,
       }));
-      const metrics = {
+      const metrics: any = {
         pcr: c.ce.oi > 0 ? c.pe.oi / c.ce.oi : null,
         atmIv: (c.ce.iv + c.pe.iv) / 2,
         nearCeOiChg: c.ce.oi - (candles[i - 1]?.ce.oi ?? c.ce.oi),

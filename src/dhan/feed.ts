@@ -64,7 +64,7 @@ const PACKET_LENGTH = { ticker: 16, prevclose: 16, quote: 50, oi: 12, full: 162,
 
 /**
  * Parse one binary packet (Buffer, little endian).
- * Pure function - unit tested in test/selftest.js.
+ * Pure function - unit tested in test/selftest.ts.
  */
 export function parseBinaryPacket(buf) {
   if (!Buffer.isBuffer(buf)) buf = Buffer.from(buf);
@@ -85,7 +85,7 @@ export function parseBinaryPacket(buf) {
   const type = PACKET_TYPE_BY_CODE[code] || 'unknown';
   const segment = SEGMENT_BY_CODE[segmentByte] || `SEG_${segmentByte}`;
 
-  const packet = { type, code, segment, securityId, messageLength };
+  const packet: Record<string, any> = { type, code, segment, securityId, messageLength };
 
   switch (type) {
     case 'ticker':
@@ -163,7 +163,20 @@ export function parseBinaryFrame(buf) {
 const round2 = (v) => Math.round(v * 100) / 100;
 
 export class FeedClient extends EventEmitter {
-  constructor({ clientId, accessToken, logger = null, WebSocketImpl = WebSocket } = {}) {
+  clientId: string;
+  accessToken: string;
+  logger: any;
+  WebSocketImpl: typeof WebSocket;
+  ws: any;
+  subscribed: Map<string, any>;
+  ltpCache: Map<string, any>;
+  backoffMs: number;
+  closedByUser: boolean;
+  lastMessageAt: number;
+  _watchdog: ReturnType<typeof setInterval> | null;
+  _reportedUnknown: Set<number>;
+
+  constructor({ clientId, accessToken, logger = null, WebSocketImpl = WebSocket }: any = {}) {
     super();
     this.clientId = clientId;
     this.accessToken = accessToken;

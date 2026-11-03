@@ -16,6 +16,11 @@ import { istStamp } from '../ist.js';
 import { appendCsvRow } from '../csv.js';
 
 export class DecisionJournal {
+  csvPath: string;
+  logger: any;
+  lastSnapshotBySymbol: Map<string, string>;
+  counts: { total: number; signals: number; noTrade: number; rejected: number };
+
   constructor(dataDir, { logger = null } = {}) {
     this.csvPath = path.join(dataDir, 'decisions.csv');
     this.logger = logger;

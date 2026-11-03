@@ -1,7 +1,7 @@
 /**
  * Offline selftest - no credentials, no network (the ollama-sdk is exercised
  * through a stub client; the real server is never contacted).
- *   node src/index.js selftest
+ *   npm run selftest
  *
  *  1. IST clock utilities             8. Option selector (liquidity filters)
  *  2. WebSocket binary parser         9. Risk manager (hard gate)
@@ -381,7 +381,7 @@ function testStrategyRegistry() {
     const context = buildMarketContext(candles, metrics, {});
     return { candidates: registry.evaluateAll({ candles, context, chainMetrics: metrics }), context };
   };
-  const has = (candidates, id, dir) => candidates.some((c) => c.strategyId === id && (!dir || c.direction === dir));
+  const has = (candidates, id, dir = null) => candidates.some((c) => c.strategyId === id && (!dir || c.direction === dir));
 
   // --- ema_cross on a rising trend ---
   let { candidates } = evalCtx(makeCandles(risingCloses), BULLISH_METRICS);
@@ -519,7 +519,10 @@ function testRiskManager() {
     symbol: 'NIFTY', entryPrice: 100, stopTrigger: 70, targetPrice: 160,
     qty: 75, openPositions: 0, dailyPnl: 0, optionViolations: [], force: true, ...over,
   });
-  const rm = () => new RiskManager({ ...RISK0 }, { signalWindow: { start: '09:20', end: '15:05' } });
+  const rm = () => new RiskManager({ ...RISK0 }, {
+    signalWindow: { start: '09:20', end: '15:05' },
+    nowFn: () => new Date('2026-11-03T05:00:00Z'),
+  });
 
   ok('clean trade passes', rm().review(mk()).passed === true);
 
@@ -551,7 +554,7 @@ function testRiskManager() {
 
 /* -------------------------- 10. Tev1 selector -------------------------- */
 
-function stubOllama(behavior = {}) {
+function stubOllama(behavior: any = {}) {
   return {
     calls: 0,
     lastRequest: null,
@@ -850,7 +853,10 @@ async function testEndToEnd() {
   ok('e2e option selected', option.ok === true && option.entryPrice === 100.5);
 
   // Layer 3
-  const riskManager = new RiskManager(RISK0, { signalWindow: { start: '09:20', end: '15:05' } });
+  const riskManager = new RiskManager(RISK0, {
+    signalWindow: { start: '09:20', end: '15:05' },
+    nowFn: () => new Date('2026-11-03T05:00:00Z'),
+  });
   const risk = riskManager.review({
     symbol: 'TEST', entryPrice: option.entryPrice,
     stopTrigger: round2v(option.entryPrice * 0.7),

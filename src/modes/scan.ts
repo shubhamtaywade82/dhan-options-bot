@@ -458,7 +458,7 @@ export async function runScan({ cfgOverride = null, force = false, once = false 
 /* ------------------------------- helpers ------------------------------- */
 
 function enrichForModel(candidates, registry) {
-  const byId = new Map(registry.list().map((d) => [d.strategyId, d]));
+  const byId = new Map<string, any>(registry.list().map((d) => [d.strategyId, d]));
   return candidates.map((c) => ({ ...c, description: byId.get(c.strategyId)?.description || c.strategyId }));
 }
 

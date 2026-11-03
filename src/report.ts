@@ -11,7 +11,7 @@ import { readCsv } from './csv.js';
  * @param {string} dateStr  YYYY-MM-DD
  * @param {object} opts { dataDir, telegram, logger, journal? }
  */
-export function generateDailyReport(dateStr, { dataDir, telegram = null, logger = null, journal = null } = {}) {
+export function generateDailyReport(dateStr, { dataDir, telegram = null, logger = null, journal = null }: any = {}) {
   const trades = readCsv(path.join(dataDir, 'trades.csv')).filter((t) => String(t.closedAt || t.openedAt).startsWith(dateStr));
   const signals = readCsv(path.join(dataDir, 'signals.csv')).filter((s) => String(s.at).startsWith(dateStr));
   const decisions = readCsv(path.join(dataDir, 'decisions.csv')).filter((d) => String(d.ts).startsWith(dateStr));
@@ -30,7 +30,7 @@ export function generateDailyReport(dateStr, { dataDir, telegram = null, logger 
     lines.push(`Decisions journaled : ${decisions.length}`);
     lines.push(`  signals           : ${signalsD.length}`);
     lines.push(`  no-trade          : ${noTrade.length}`);
-    const reasons = {};
+    const reasons: Record<string, number> = {};
     for (const d of noTrade) reasons[d.reason || '?'] = (reasons[d.reason || '?'] || 0) + 1;
     const topReasons = Object.entries(reasons).sort((a, b) => b[1] - a[1]).slice(0, 6);
     if (topReasons.length) lines.push(`  top no-trade      : ${topReasons.map(([k, v]) => `${k}=${v}`).join(', ')}`);
@@ -39,7 +39,7 @@ export function generateDailyReport(dateStr, { dataDir, telegram = null, logger 
 
   // --- signals -------------------------------------------------------------
   lines.push(`Signals generated : ${signals.length}`);
-  const byStrategy = {};
+  const byStrategy: Record<string, number> = {};
   for (const s of signals) byStrategy[s.strategyId || '?'] = (byStrategy[s.strategyId || '?'] || 0) + 1;
   if (Object.keys(byStrategy).length) {
     lines.push(`  by strategy      : ${Object.entries(byStrategy).map(([k, v]) => `${k}=${v}`).join(', ')}`);
@@ -67,11 +67,11 @@ export function generateDailyReport(dateStr, { dataDir, telegram = null, logger 
     lines.push(`Net P&L (paper)   : ${total >= 0 ? '+' : ''}INR ${total.toFixed(2)}`);
     lines.push('');
 
-    const reasons = {};
+    const reasons: Record<string, number> = {};
     for (const t of trades) reasons[t.exitReason || '?'] = (reasons[t.exitReason || '?'] || 0) + 1;
     lines.push(`Exit reasons      : ${Object.entries(reasons).map(([k, v]) => `${k}=${v}`).join(', ')}`);
 
-    const perSym = {};
+    const perSym: Record<string, { n: number; pnl: number }> = {};
     for (const t of trades) {
       perSym[t.symbol] ??= { n: 0, pnl: 0 };
       perSym[t.symbol].n += 1;

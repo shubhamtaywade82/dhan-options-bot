@@ -24,11 +24,15 @@
 export const NO_TRADE_KEY = 'NO_TRADE';
 
 export class Tev1StrategySelector {
+  client: any;
+  policy: { model: string; minConfidence: number; timeoutMs: number; keepAlive: string; logger: any };
+  calls: number;
+
   /**
    * @param {object} clientLike an OllamaClient (or a stub with systemOne())
    * @param {object} policy { model, minConfidence, timeoutMs, keepAlive, logger }
    */
-  constructor(clientLike, policy = {}) {
+  constructor(clientLike: any, policy: any = {}) {
     this.client = clientLike;
     this.policy = {
       model: policy.model || 'tev1:0.8b',

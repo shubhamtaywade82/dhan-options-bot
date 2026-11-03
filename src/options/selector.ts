@@ -13,13 +13,15 @@
  */
 
 export class OptionSelector {
+  cfg: any;
+
   /**
    * @param {object} cfg {
    *   strikeOffset, maxSpreadPct, minLegVolume, minLegOi, maxChainAgeMs,
    *   minDelta, maxDelta, ivMin, ivMax
    * }
    */
-  constructor(cfg = {}) {
+  constructor(cfg: any = {}) {
     this.cfg = {
       strikeOffset: 0,
       maxSpreadPct: 3,

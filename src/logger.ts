@@ -9,6 +9,12 @@ import { appendCsvRow } from './csv.js';
 import { istStamp } from './ist.js';
 
 export class BotLogger {
+  dir: string;
+  logDir: string;
+  tradesCsv: string;
+  signalsCsv: string;
+  logFile: string;
+
   constructor(dataDir) {
     this.dir = dataDir;
     this.logDir = path.join(dataDir, 'logs');
@@ -24,10 +30,10 @@ export class BotLogger {
     } catch { /* logging must never crash the bot */ }
   }
 
-  info(msg, obj) { this._write('INFO ', msg, obj); }
-  warn(msg, obj) { this._write('WARN ', msg, obj); }
-  error(msg, obj) { this._write('ERROR', msg, obj); }
-  signal(msg, obj) { this._write('SIGNAL', msg, obj); }
+  info(msg, obj = undefined) { this._write('INFO ', msg, obj); }
+  warn(msg, obj = undefined) { this._write('WARN ', msg, obj); }
+  error(msg, obj = undefined) { this._write('ERROR', msg, obj); }
+  signal(msg, obj = undefined) { this._write('SIGNAL', msg, obj); }
 
   _write(level, msg, obj) {
     const line = `[${istStamp()}] [${level}] ${msg}` + (obj !== undefined ? ' ' + safeJson(obj) : '');

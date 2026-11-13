@@ -6,15 +6,27 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readCsv } from './csv.js';
+import { istParts } from './ist.js';
+
+/**
+ * Match a timestamp (ISO string or IST log stamp) against target YYYY-MM-DD in IST.
+ */
+function matchesDate(val: any, targetDate: string): boolean {
+  if (!val) return false;
+  const s = String(val).trim();
+  if (s.startsWith(targetDate)) return true;
+  const d = new Date(s);
+  return !Number.isNaN(d.getTime()) && istParts(d).date === targetDate;
+}
 
 /**
  * @param {string} dateStr  YYYY-MM-DD
  * @param {object} opts { dataDir, telegram, logger, journal? }
  */
 export function generateDailyReport(dateStr, { dataDir, telegram = null, logger = null, journal = null }: any = {}) {
-  const trades = readCsv(path.join(dataDir, 'trades.csv')).filter((t) => String(t.closedAt || t.openedAt).startsWith(dateStr));
-  const signals = readCsv(path.join(dataDir, 'signals.csv')).filter((s) => String(s.at).startsWith(dateStr));
-  const decisions = readCsv(path.join(dataDir, 'decisions.csv')).filter((d) => String(d.ts).startsWith(dateStr));
+  const trades = readCsv(path.join(dataDir, 'trades.csv')).filter((t) => matchesDate(t.closedAt || t.openedAt, dateStr));
+  const signals = readCsv(path.join(dataDir, 'signals.csv')).filter((s) => matchesDate(s.at, dateStr));
+  const decisions = readCsv(path.join(dataDir, 'decisions.csv')).filter((d) => matchesDate(d.ts, dateStr));
 
   const lines = [];
   lines.push(`========================================`);
